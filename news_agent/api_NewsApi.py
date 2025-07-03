@@ -12,8 +12,14 @@ API_KEY = os.getenv("NEWS_API_API_KEY")
 
 # 健壮性检查：确保API_KEY已成功加载
 if not API_KEY:
-    raise ValueError("API密钥未找到。请确保您的.env文件中有'NEWSAPI_KEY=your_key'的配置。")
+    raise ValueError("API密钥未找到。请确保您的.env文件中有'NEWS_API_API_KEY=your_key'的配置。")
 
+
+# --- 这是解决问题的关键调试代码 ---
+print("--- 调试信息 ---")
+print(f"程序读取到的 API_KEY 的值是: '{API_KEY}'") 
+print("--- 调试结束 ---")
+# --- 调试代码结束 ---
 
 def setup_database():
     """
