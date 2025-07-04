@@ -42,8 +42,6 @@
   * **Goal:** To act as a 24/7 financial encyclopedia.
   * **Functionality:** Allows users to ask questions in natural language (e.g., "What is quantitative easing?", "Summarize recent news about AAPL") and receive accurate, context-aware answers generated from the system's knowledge base.
 
----
-
 ## Technology Stack (Plan, might change)
 
 * **Backend:** Python (Flask / Django)
@@ -55,8 +53,6 @@
 * **Frontend:** React / Vue.js
 * **Data Visualization:** ECharts, AntV, D3.js
 * **Deployment:** Docker, Nginx, Gunicorn
-
----
 
 ## Development Roadmap (Plan, might change)
 
