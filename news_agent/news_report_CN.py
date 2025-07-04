@@ -51,51 +51,28 @@ def format_prompt_for_llm(articles):
         return None
 
     prompt_header = """
-                    You are a senior financial analyst. Your job is to compile a list of top news stories based on the news collected.
+        你是一位资深的金融分析师。你的工作是根据收集到的新闻，整理一个要闻列表。
 
-                    When compiling, you must pay attention to the following:
-                    1. If multiple reports cover the same event, present it as a single event. The more reports an event has, the more important it is, and the more attention you should pay to it.
-                    2. Pay special attention to finance-related content. All finance-related content must not be omitted.
-
-                    After compiling, you are to produce a "Global News Report." The report should include:
-                    1.  **Today's News Overview:**
-                        (1) Summarize the most important news of the day.
-                        (2) Provide an overall sentiment indicator (Overall Optimistic, Overall Stable, or Overall Pessimistic). If the majority of the news is favorable to the market, classify it as "Overall Optimistic." If there is nothing particularly significant, classify it as "Overall Stable." If there is more negative news, classify it as "Overall Pessimistic."
-                    2.  **Key News Details:** Summarize the day's most important news concerning finance, markets, the economy, macroeconomics, and other related fields. Include no fewer than 10 items.
-                    3.  **Key Sectors and Company News:** Indicate which companies may be affected, listing only the company name and a brief reason.
-                    4.  **Signals to Watch:** Analyze the information from today's news that is most likely to impact future markets. Include no fewer than 3 items.
-                    5.  **Other News:** Collect all other news items from the day that are not related to the primary analysis above. Do not omit any. A simple summary is sufficient.
-
-                    The report's language should be professional, concise, neutral, and objective. For proper nouns and technical terms, retain the original English to avoid translation errors.
-                    At the end of the report, list the URLs of the news articles you cited, numbered for easy reference.
-
-                    Here is today's news material:
-                    ---
-                    """
-
-    # prompt_header = """
-    #     你是一位资深的金融分析师。你的工作是根据收集到的新闻，整理一个要闻列表。
-
-    #     在整理的时候，你要注意：
-    #     1、如果多条报道在说同一件事情, 那么这件事情作为一件事情展示; 并且报道越多的事情越重要, 你要越重视
-    #     2、特别关注财经相关的内容, 所有财经相关的内容都不能省略掉
+        在整理的时候，你要注意：
+        1、如果多条报道在说同一件事情, 那么这件事情作为一件事情展示; 并且报道越多的事情越重要, 你要越重视
+        2、特别关注财经相关的内容, 所有财经相关的内容都不能省略掉
 
 
-    #     整理完后你要出一份《全球要闻报告》，报告内容包括：
-    #     1、今日新闻概览:
-    #     (1)总结当日最重要的新闻。
-    #     (2)提供一个整体乐观和整体悲观的指标，如果大多数都是有利于市场的新闻，就评价为整体乐观；如果没什么特别的，就评价为整体平稳；如果负面较多，则评价为整体悲观。
-    #     2、重要新闻详情:总结当天新闻中最重要的关于金融、市场、财经、宏观等多方面的内容。不少于10条。
-    #     3、重点板块与公司新闻: 说明哪些公司可能会受到影响，只需要列出公司名字和简要原因即可。
-    #     4、值得关注的信号: 分析当日新闻中最可能影响未来市场的信息。不少于3条。
-    #     5、其他新闻: 和上面主要分析的无关内容但是出现在今天新闻中的，全部收集在这里，不要有任何的遗漏，简单整理即可。
+        整理完后你要出一份《全球要闻报告》，报告内容包括：
+        1、今日新闻概览:
+        (1)总结当日最重要的新闻。
+        (2)提供一个整体乐观和整体悲观的指标，如果大多数都是有利于市场的新闻，就评价为整体乐观；如果没什么特别的，就评价为整体平稳；如果负面较多，则评价为整体悲观。
+        2、重要新闻详情:总结当天新闻中最重要的关于金融、市场、财经、宏观等多方面的内容。不少于10条。
+        3、重点板块与公司新闻: 说明哪些公司可能会受到影响，只需要列出公司名字和简要原因即可。
+        4、值得关注的信号: 分析当日新闻中最可能影响未来市场的信息。不少于3条。
+        5、其他新闻: 和上面主要分析的无关内容但是出现在今天新闻中的，全部收集在这里，不要有任何的遗漏，简单整理即可。
 
-    #     报告语言应专业、简洁、中立客观。对于专有名词, 保留原英文以防翻译错误。
-    #     在报告的最后将你引用的新闻按照标号记录其对应的链接，方便用户点开查看。
+        报告语言应专业、简洁、中立客观。对于专有名词, 保留原英文以防翻译错误。
+        在报告的最后将你引用的新闻按照标号记录其对应的链接，方便用户点开查看。
 
-    #     以下是今天的新闻资料：
-    #     ---
-    #     """
+        以下是今天的新闻资料：
+        ---
+        """
     
     news_body = ""
     for i, article in enumerate(articles):
@@ -103,26 +80,15 @@ def format_prompt_for_llm(articles):
         content_snippet = article['content'][:1500] if article['content'] else ""
         
         news_body += f"""
-                        News {i+1}:
-                        Source: {article['source_name']}
-                        Title: {article['title']}
-                        URL: {article['url']}
-                        Summary: {article['description']}
-                        Content Snippet: {content_snippet}...
+                        新闻 {i+1}:
+                        新闻来源: {article['source_name']}
+                        标题: {article['title']}
+                        URL" {article['url']}
+                        摘要: {article['description']}
+                        内容片段: {content_snippet}...
 
                         ---
                         """
-        
-        # news_body += f"""
-        #                 新闻 {i+1}:
-        #                 新闻来源: {article['source_name']}
-        #                 标题: {article['title']}
-        #                 URL" {article['url']}
-        #                 摘要: {article['description']}
-        #                 内容片段: {content_snippet}...
-
-        #                 ---
-        #                 """
     
     return prompt_header + news_body
 
@@ -192,7 +158,7 @@ if __name__ == "__main__":
                 os.makedirs(REPORTS_DIR, exist_ok=True)
                 
                 # 2. 按照您指定的格式创建文件名
-                report_filename = f"NR_{target_date_str}.md"
+                report_filename = f"NR_{target_date_str}_CN.md"
                 report_filepath = os.path.join(REPORTS_DIR, report_filename)
                 
                 # 3. 将报告写入文件
