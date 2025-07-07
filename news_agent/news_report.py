@@ -198,7 +198,7 @@ if __name__ == "__main__":
                 # 3. 将报告写入文件
                 try:
                     with open(report_filepath, 'w', encoding='utf-8') as f:
-                        f.write(f"# 全球重要新闻每日快报 ({target_date_str})\n\n") # 在文件开头加上一级标题
+                        f.write(f"# Global News Daily Report ({target_date_str})\n\n") # 在文件开头加上一级标题
                         f.write(final_report)
                     print(f"\n✅ 报告也已成功保存到文件: {report_filepath}")
                 except Exception as e:
