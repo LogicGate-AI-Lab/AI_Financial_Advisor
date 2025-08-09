@@ -4,6 +4,14 @@
 
 **Project Status:** [In Development]
 
+## Recent Update
+
+The news agent's global news module has finished development and deployed on Google Cloud, you can visit demo website here:
+
+* [https://jeffliulab.github.io/real_time_demo/ai_financial_advisor/index.html](https://jeffliulab.github.io/real_time_demo/ai_financial_advisor/index.html)
+
+Note: The news agent will **automatically update** on UTC 2:00 **EVERY DAY!**
+
 ## Core Modules (Plan, might change)
 
 ### 1. Data Layer
