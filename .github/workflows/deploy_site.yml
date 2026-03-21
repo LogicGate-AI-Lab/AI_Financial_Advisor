@@ -32,11 +32,39 @@ jobs:
       - name: Build site
         run: |
           python -c "
+          import logging
+          logging.basicConfig(level=logging.WARNING)
           from pathlib import Path
-          from ai_financial_advisor.web.site_builder import SiteBuilder
+          from ai_financial_advisor.agents.stock_agent import StockAgent
+          from ai_financial_advisor.data.market_types import MarketType, get_watchlist
+          from ai_financial_advisor.web.site_builder import SiteBuilder, StockRow
+
+          # Fetch market data for site
+          agent = StockAgent()
+          market_data = {}
+          for market in [MarketType.US, MarketType.CRYPTO]:
+              symbols = get_watchlist(market)[:10]
+              try:
+                  results = agent.analyze_multiple(symbols, period='6mo')
+                  rows = [
+                      StockRow(
+                          symbol=r.symbol, currency=r.currency,
+                          close=r.latest_close, score=r.trend.score,
+                          interpretation=r.trend.interpretation,
+                          macd_signal=r.trend.macd_signal,
+                          mfi_signal=r.trend.mfi_signal,
+                          obv_signal=r.trend.obv_signal,
+                      )
+                      for r in results
+                  ]
+                  rows.sort(key=lambda x: x.score, reverse=True)
+                  market_data[market.value.upper()] = rows
+              except Exception as e:
+                  print(f'Warning: {market.value} scan failed: {e}')
+
           builder = SiteBuilder(reports_dir=Path('data/reports'), output_dir=Path('docs/site'))
-          builder.build()
-          print('Site built successfully.')
+          builder.build(market_data=market_data)
+          print(f'Site built with {len(market_data)} markets.')
           "
 
       - name: Deploy to GitHub Pages
