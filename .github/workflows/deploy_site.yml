@@ -6,6 +6,8 @@ on:
     paths:
       - "data/reports/**"
       - "src/ai_financial_advisor/web/**"
+      - ".github/workflows/deploy_site.yml"
+  workflow_dispatch:
 
 permissions:
   contents: write
