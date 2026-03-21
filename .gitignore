@@ -1,12 +1,34 @@
-# api key
+# API keys and secrets
 .env
 
-# database
-.db
-
-# cache
+# Python
 __pycache__/
-*.pyc 
-*.pyo 
+*.pyc
+*.pyo
 *.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Data files
+*.db
+*.csv
+data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Testing and tools
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
 test_cache/
+
+# OS
+.DS_Store
+Thumbs.db

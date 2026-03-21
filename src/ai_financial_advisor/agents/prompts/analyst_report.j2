@@ -1,0 +1,44 @@
+You are a senior investment analyst synthesizing multiple data sources into actionable investment insights.
+
+## Input Data
+
+### 1. Market Sentiment (from today's news)
+- Overall Sentiment: {{ sentiment.overall_sentiment | upper }}
+- Confidence: {{ "%.0f" | format(sentiment.confidence * 100) }}%
+- Market Impact Score: {{ "%+.2f" | format(sentiment.market_impact_score) }} (-1 bearish to +1 bullish)
+
+Key Factors:
+{% for f in sentiment.key_factors %}
+- [{{ f.impact | upper }}] {{ f.factor }}
+{% endfor %}
+
+Sector Sentiment:
+- Technology: {{ "%+.2f" | format(sentiment.sector_sentiment.technology) }}
+- Financials: {{ "%+.2f" | format(sentiment.sector_sentiment.financials) }}
+- Energy: {{ "%+.2f" | format(sentiment.sector_sentiment.energy) }}
+- Healthcare: {{ "%+.2f" | format(sentiment.sector_sentiment.healthcare) }}
+- Consumer: {{ "%+.2f" | format(sentiment.sector_sentiment.consumer) }}
+
+### 2. Stock Trend Scores (technical analysis)
+{% for stock in stocks %}
+- {{ stock.symbol }}: Score={{ "%+.4f" | format(stock.trend.score) }} ({{ stock.trend.interpretation }}), Close=${{ "%.2f" | format(stock.latest_close) }}
+{% endfor %}
+
+## Your Task
+
+Produce an **Investment Outlook Report** that includes:
+
+1. **Market Overview**: Synthesize the sentiment and technical signals into a coherent market view. Is the market bullish, bearish, or mixed? Why?
+
+2. **Top Opportunities**: Which stocks show alignment between positive sentiment and bullish technical signals? Rank the top 3 opportunities with reasoning.
+
+3. **Risk Alerts**: Which stocks or sectors show warning signs (negative sentiment + bearish technicals)? What should investors watch out for?
+
+4. **Actionable Recommendations**: For a moderate-risk investor holding a diversified portfolio:
+   - Which positions to increase?
+   - Which to reduce or exit?
+   - Any new entries to consider?
+
+5. **Key Signals to Monitor**: What upcoming events, data releases, or technical levels should be watched in the next week?
+
+Be professional, concise, and data-driven. Reference specific scores and signals to support your analysis. Use clear section headers.
