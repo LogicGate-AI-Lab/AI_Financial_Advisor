@@ -78,15 +78,19 @@ def calculate_trend_score(
     if not has_mfi and not has_obv:
         w = {"macd": 1.0, "mfi": 0.0, "obv": 0.0}
     elif not has_mfi:
-        w = {"macd": w["macd"] + w["mfi"] / 2, "mfi": 0.0, "obv": w["obv"] + w["mfi"] / 2}
+        w = {
+            "macd": w["macd"] + w["mfi"] / 2,
+            "mfi": 0.0,
+            "obv": w["obv"] + w["mfi"] / 2,
+        }
     elif not has_obv:
-        w = {"macd": w["macd"] + w["obv"] / 2, "mfi": w["mfi"] + w["obv"] / 2, "obv": 0.0}
+        w = {
+            "macd": w["macd"] + w["obv"] / 2,
+            "mfi": w["mfi"] + w["obv"] / 2,
+            "obv": 0.0,
+        }
 
-    score = (
-        w["macd"] * macd_signal
-        + w["mfi"] * mfi_signal
-        + w["obv"] * obv_signal
-    )
+    score = w["macd"] * macd_signal + w["mfi"] * mfi_signal + w["obv"] * obv_signal
 
     if score > 0.3:
         interpretation = "Bullish"

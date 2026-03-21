@@ -5,7 +5,7 @@ total return, Sharpe ratio, max drawdown, and win rate.
 """
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import numpy as np
 import pandas as pd
@@ -35,14 +35,14 @@ class BacktestResult:
     period: str
     initial_capital: float
     final_value: float
-    total_return: float          # as percentage
-    annualized_return: float     # as percentage
+    total_return: float  # as percentage
+    annualized_return: float  # as percentage
     sharpe_ratio: float
-    max_drawdown: float          # as percentage (negative)
-    win_rate: float              # as percentage
+    max_drawdown: float  # as percentage (negative)
+    win_rate: float  # as percentage
     total_trades: int
     trades: list[Trade]
-    equity_curve: pd.Series      # daily portfolio value
+    equity_curve: pd.Series  # daily portfolio value
 
 
 class Backtester:
@@ -93,14 +93,16 @@ class Backtester:
                 capital = shares * signal.price
                 ret = (signal.price - buy_price) / buy_price
                 days = (pd.Timestamp(signal.date) - pd.Timestamp(buy_date)).days
-                trades.append(Trade(
-                    buy_date=buy_date,
-                    buy_price=buy_price,
-                    sell_date=signal.date,
-                    sell_price=signal.price,
-                    return_pct=round(ret * 100, 4),
-                    holding_days=max(days, 1),
-                ))
+                trades.append(
+                    Trade(
+                        buy_date=buy_date,
+                        buy_price=buy_price,
+                        sell_date=signal.date,
+                        sell_price=signal.price,
+                        return_pct=round(ret * 100, 4),
+                        holding_days=max(days, 1),
+                    )
+                )
                 shares = 0.0
 
             # Record equity

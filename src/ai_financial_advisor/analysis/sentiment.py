@@ -88,7 +88,10 @@ def analyze_sentiment(report_text: str, llm: LLMProvider) -> SentimentResult:
 
     response = llm.complete(
         messages=[
-            {"role": "system", "content": "You are a financial sentiment analysis system. Return only valid JSON."},
+            {
+                "role": "system",
+                "content": "You are a financial sentiment analysis system. Return only valid JSON.",
+            },
             {"role": "user", "content": prompt},
         ],
         temperature=0.2,
@@ -109,10 +112,7 @@ def analyze_sentiment(report_text: str, llm: LLMProvider) -> SentimentResult:
             market_impact_score=0.0,
         )
 
-    key_factors = [
-        KeyFactor(factor=f["factor"], impact=f["impact"])
-        for f in data.get("key_factors", [])
-    ]
+    key_factors = [KeyFactor(factor=f["factor"], impact=f["impact"]) for f in data.get("key_factors", [])]
 
     sector_data = data.get("sector_sentiment", {})
     sector_sentiment = SectorSentiment(
@@ -134,6 +134,8 @@ def analyze_sentiment(report_text: str, llm: LLMProvider) -> SentimentResult:
 
     logger.info(
         "Sentiment: %s (confidence=%.2f, impact=%.2f)",
-        result.overall_sentiment, result.confidence, result.market_impact_score,
+        result.overall_sentiment,
+        result.confidence,
+        result.market_impact_score,
     )
     return result

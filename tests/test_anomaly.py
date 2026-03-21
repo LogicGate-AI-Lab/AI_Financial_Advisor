@@ -1,7 +1,5 @@
 """Tests for anomaly detection."""
 
-from datetime import date
-
 import numpy as np
 import pandas as pd
 import pytest
@@ -99,7 +97,12 @@ class TestAnomalyDetector:
             a = anomalies[0]
             assert isinstance(a, Anomaly)
             assert a.symbol == "AAPL"
-            assert a.type in ("price_spike", "price_crash", "volume_surge", "volume_drop")
+            assert a.type in (
+                "price_spike",
+                "price_crash",
+                "volume_surge",
+                "volume_drop",
+            )
             assert a.severity in ("warning", "alert", "critical")
             assert isinstance(a.z_score, float)
             assert isinstance(a.description, str)

@@ -4,21 +4,20 @@ All settings are loaded from environment variables or a .env file.
 Switch LLM providers, API keys, and storage backends without changing code.
 """
 
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
-from typing import Optional
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class LLMProviderType(str, Enum):
+class LLMProviderType(StrEnum):
     OPENAI = "openai"
     CLAUDE = "claude"
     OLLAMA = "ollama"
 
 
-class StorageBackend(str, Enum):
+class StorageBackend(StrEnum):
     SQLITE = "sqlite"
     GCS = "gcs"
 
@@ -35,7 +34,7 @@ class LLMSettings(BaseSettings):
     provider: LLMProviderType = LLMProviderType.OPENAI
     model: str = "deepseek-reasoner"
     api_key: str = ""
-    base_url: Optional[str] = None
+    base_url: str | None = None
     temperature: float = 0.5
     max_tokens: int = 8192
 

@@ -17,7 +17,7 @@ class Signal:
     """A trading signal at a point in time."""
 
     date: object  # pd.Timestamp
-    action: str   # "buy", "sell", "hold"
+    action: str  # "buy", "sell", "hold"
     score: float
     price: float
 

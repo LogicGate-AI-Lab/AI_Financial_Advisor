@@ -17,8 +17,8 @@ class Anomaly:
 
     date: date
     symbol: str
-    type: str          # "price_spike", "price_crash", "volume_surge", "volume_drop"
-    severity: str      # "warning", "alert", "critical"
+    type: str  # "price_spike", "price_crash", "volume_surge", "volume_drop"
+    severity: str  # "warning", "alert", "critical"
     z_score: float
     description: str
 
@@ -67,14 +67,16 @@ class AnomalyDetector:
                 anomaly_type = "price_crash"
                 desc = f"{symbol} dropped {ret:+.2%} (z={z_val:+.2f})"
 
-            anomalies.append(Anomaly(
-                date=dt,
-                symbol=symbol,
-                type=anomaly_type,
-                severity=_classify_severity(abs(z_val), self._z_threshold),
-                z_score=round(z_val, 4),
-                description=desc,
-            ))
+            anomalies.append(
+                Anomaly(
+                    date=dt,
+                    symbol=symbol,
+                    type=anomaly_type,
+                    severity=_classify_severity(abs(z_val), self._z_threshold),
+                    z_score=round(z_val, 4),
+                    description=desc,
+                )
+            )
 
         return anomalies
 
@@ -113,14 +115,16 @@ class AnomalyDetector:
                 anomaly_type = "volume_drop"
                 desc = f"{symbol} volume {ratio:.1f}x average (z={z_val:+.2f})"
 
-            anomalies.append(Anomaly(
-                date=dt,
-                symbol=symbol,
-                type=anomaly_type,
-                severity=_classify_severity(abs(z_val), self._z_threshold),
-                z_score=round(z_val, 4),
-                description=desc,
-            ))
+            anomalies.append(
+                Anomaly(
+                    date=dt,
+                    symbol=symbol,
+                    type=anomaly_type,
+                    severity=_classify_severity(abs(z_val), self._z_threshold),
+                    z_score=round(z_val, 4),
+                    description=desc,
+                )
+            )
 
         return anomalies
 
@@ -139,9 +143,7 @@ class AnomalyDetector:
         anomalies.sort(key=lambda a: a.date, reverse=True)
         return anomalies
 
-    def get_recent_anomalies(
-        self, df: pd.DataFrame, symbol: str, days: int = 5
-    ) -> list[Anomaly]:
+    def get_recent_anomalies(self, df: pd.DataFrame, symbol: str, days: int = 5) -> list[Anomaly]:
         """Get anomalies from the last N days only.
 
         Args:

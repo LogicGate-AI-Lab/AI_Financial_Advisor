@@ -15,24 +15,24 @@ logger = logging.getLogger(__name__)
 class MacroSnapshot:
     """Point-in-time macroeconomic data snapshot."""
 
-    gdp_growth: float | None         # GDP growth rate (annualized %)
-    cpi_yoy: float | None            # CPI year-over-year change (%)
-    unemployment: float | None       # Unemployment rate (%)
-    fed_funds: float | None          # Federal funds rate (%)
-    treasury_10y: float | None       # 10-year Treasury yield (%)
-    treasury_2y: float | None        # 2-year Treasury yield (%)
+    gdp_growth: float | None  # GDP growth rate (annualized %)
+    cpi_yoy: float | None  # CPI year-over-year change (%)
+    unemployment: float | None  # Unemployment rate (%)
+    fed_funds: float | None  # Federal funds rate (%)
+    treasury_10y: float | None  # 10-year Treasury yield (%)
+    treasury_2y: float | None  # 2-year Treasury yield (%)
     yield_curve_spread: float | None  # 10y - 2y spread (%)
-    as_of: str = ""                  # Date of latest data
+    as_of: str = ""  # Date of latest data
 
 
 # FRED series IDs
 _SERIES = {
-    "gdp_growth": "A191RL1Q225SBEA",   # Real GDP growth (quarterly, annualized)
-    "cpi_yoy": "CPIAUCSL",              # CPI for All Urban Consumers
-    "unemployment": "UNRATE",            # Unemployment Rate
-    "fed_funds": "FEDFUNDS",             # Federal Funds Effective Rate
-    "treasury_10y": "DGS10",             # 10-Year Treasury Constant Maturity
-    "treasury_2y": "DGS2",              # 2-Year Treasury Constant Maturity
+    "gdp_growth": "A191RL1Q225SBEA",  # Real GDP growth (quarterly, annualized)
+    "cpi_yoy": "CPIAUCSL",  # CPI for All Urban Consumers
+    "unemployment": "UNRATE",  # Unemployment Rate
+    "fed_funds": "FEDFUNDS",  # Federal Funds Effective Rate
+    "treasury_10y": "DGS10",  # 10-Year Treasury Constant Maturity
+    "treasury_2y": "DGS2",  # 2-Year Treasury Constant Maturity
 }
 
 
@@ -45,6 +45,7 @@ class MacroDataFetcher:
 
     def __init__(self, api_key: str) -> None:
         from fredapi import Fred
+
         self._fred = Fred(api_key=api_key)
 
     def fetch_snapshot(self) -> MacroSnapshot:
@@ -77,8 +78,13 @@ class MacroDataFetcher:
             as_of=datetime.now().strftime("%Y-%m-%d"),
         )
 
-        logger.info("Macro snapshot: GDP=%.2f%%, CPI=%.2f%%, Unemp=%.2f%%, Fed=%.2f%%",
-                     gdp or 0, cpi_raw or 0, unemployment or 0, fed_funds or 0)
+        logger.info(
+            "Macro snapshot: GDP=%.2f%%, CPI=%.2f%%, Unemp=%.2f%%, Fed=%.2f%%",
+            gdp or 0,
+            cpi_raw or 0,
+            unemployment or 0,
+            fed_funds or 0,
+        )
         return snapshot
 
     def _get_latest(self, series_id: str) -> float | None:

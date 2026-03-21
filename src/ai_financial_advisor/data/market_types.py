@@ -1,9 +1,9 @@
 """Market type detection and preset watchlists for global markets."""
 
-from enum import Enum
+from enum import StrEnum
 
 
-class MarketType(str, Enum):
+class MarketType(StrEnum):
     """Supported global market types."""
 
     US = "us"
@@ -20,8 +20,16 @@ class MarketType(str, Enum):
 # Preset watchlists for each market
 WATCHLISTS: dict[MarketType, list[str]] = {
     MarketType.US: [
-        "AAPL", "MSFT", "AMZN", "GOOG", "TSLA",
-        "NVDA", "META", "JPM", "V", "NFLX",
+        "AAPL",
+        "MSFT",
+        "AMZN",
+        "GOOG",
+        "TSLA",
+        "NVDA",
+        "META",
+        "JPM",
+        "V",
+        "NFLX",
     ],
     MarketType.CN: [
         "600519.SS",  # 贵州茅台
@@ -48,28 +56,28 @@ WATCHLISTS: dict[MarketType, list[str]] = {
         "9618.HK",  # JD.com
     ],
     MarketType.EU: [
-        "SAP.DE",   # SAP (Germany)
-        "MC.PA",    # LVMH (France)
+        "SAP.DE",  # SAP (Germany)
+        "MC.PA",  # LVMH (France)
         "ASML.AS",  # ASML (Netherlands)
-        "SIE.DE",   # Siemens (Germany)
-        "OR.PA",    # L'Oreal (France)
+        "SIE.DE",  # Siemens (Germany)
+        "OR.PA",  # L'Oreal (France)
         "NESN.SW",  # Nestle (Switzerland)
         "NOVO-B.CO",  # Novo Nordisk (Denmark)
-        "AZN.L",    # AstraZeneca (UK)
-        "SHEL.L",   # Shell (UK)
-        "TTE.PA",   # TotalEnergies (France)
+        "AZN.L",  # AstraZeneca (UK)
+        "SHEL.L",  # Shell (UK)
+        "TTE.PA",  # TotalEnergies (France)
     ],
     MarketType.JP: [
-        "7203.T",   # Toyota
-        "6758.T",   # Sony
-        "9984.T",   # SoftBank
-        "6861.T",   # Keyence
-        "8306.T",   # MUFG
-        "6501.T",   # Hitachi
-        "9432.T",   # NTT
-        "4063.T",   # Shin-Etsu
-        "7741.T",   # HOYA
-        "6902.T",   # Denso
+        "7203.T",  # Toyota
+        "6758.T",  # Sony
+        "9984.T",  # SoftBank
+        "6861.T",  # Keyence
+        "8306.T",  # MUFG
+        "6501.T",  # Hitachi
+        "9432.T",  # NTT
+        "4063.T",  # Shin-Etsu
+        "7741.T",  # HOYA
+        "6902.T",  # Denso
     ],
     MarketType.CRYPTO: [
         "BTC-USD",  # Bitcoin
@@ -78,10 +86,10 @@ WATCHLISTS: dict[MarketType, list[str]] = {
         "BNB-USD",  # Binance Coin
         "XRP-USD",  # Ripple
         "ADA-USD",  # Cardano
-        "DOGE-USD", # Dogecoin
-        "AVAX-USD", # Avalanche
+        "DOGE-USD",  # Dogecoin
+        "AVAX-USD",  # Avalanche
         "DOT-USD",  # Polkadot
-        "LINK-USD", # Chainlink
+        "LINK-USD",  # Chainlink
     ],
     MarketType.FOREX: [
         "EURUSD=X",  # EUR/USD
@@ -94,14 +102,14 @@ WATCHLISTS: dict[MarketType, list[str]] = {
         "NZDUSD=X",  # NZD/USD
     ],
     MarketType.COMMODITY: [
-        "GC=F",   # Gold
-        "SI=F",   # Silver
-        "CL=F",   # Crude Oil (WTI)
-        "BZ=F",   # Brent Crude
-        "NG=F",   # Natural Gas
-        "HG=F",   # Copper
-        "ZC=F",   # Corn
-        "ZW=F",   # Wheat
+        "GC=F",  # Gold
+        "SI=F",  # Silver
+        "CL=F",  # Crude Oil (WTI)
+        "BZ=F",  # Brent Crude
+        "NG=F",  # Natural Gas
+        "HG=F",  # Copper
+        "ZC=F",  # Corn
+        "ZW=F",  # Wheat
     ],
 }
 

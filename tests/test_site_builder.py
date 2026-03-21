@@ -18,9 +18,7 @@ def reports_dir(tmp_path: Path) -> Path:
     (d / "NR_2026-03-21.md").write_text(
         "# Global News Daily Report (2026-03-21)\n\nTest content here.\n\n- Item 1\n- Item 2\n"
     )
-    (d / "NR_2026-03-20.md").write_text(
-        "# Global News Daily Report (2026-03-20)\n\nYesterday's report.\n"
-    )
+    (d / "NR_2026-03-20.md").write_text("# Global News Daily Report (2026-03-20)\n\nYesterday's report.\n")
     return d
 
 
@@ -66,18 +64,14 @@ class TestSiteBuilder:
         assert "Test content here" in html
         assert "Item 1" in html
 
-    def test_builds_market_pages(
-        self, reports_dir: Path, output_dir: Path, sample_market_data: dict
-    ) -> None:
+    def test_builds_market_pages(self, reports_dir: Path, output_dir: Path, sample_market_data: dict) -> None:
         builder = SiteBuilder(reports_dir, output_dir)
         builder.build(market_data=sample_market_data)
         assert (output_dir / "market" / "index.html").exists()
         assert (output_dir / "market" / "AAPL.html").exists()
         assert (output_dir / "market" / "BTC-USD.html").exists()
 
-    def test_market_page_has_score(
-        self, reports_dir: Path, output_dir: Path, sample_market_data: dict
-    ) -> None:
+    def test_market_page_has_score(self, reports_dir: Path, output_dir: Path, sample_market_data: dict) -> None:
         builder = SiteBuilder(reports_dir, output_dir)
         builder.build(market_data=sample_market_data)
         html = (output_dir / "market" / "AAPL.html").read_text()

@@ -1,9 +1,8 @@
 """Telegram notification provider."""
 
+import json
 import logging
 from urllib.request import Request, urlopen
-from urllib.parse import urlencode
-import json
 
 from .base import Notifier
 
@@ -49,12 +48,14 @@ class TelegramNotifier(Notifier):
     def _send_message(self, text: str) -> bool:
         """Send a single message via the Telegram Bot API."""
         url = f"{self._base_url}/sendMessage"
-        payload = json.dumps({
-            "chat_id": self._chat_id,
-            "text": text,
-            "parse_mode": "Markdown",
-            "disable_web_page_preview": True,
-        }).encode("utf-8")
+        payload = json.dumps(
+            {
+                "chat_id": self._chat_id,
+                "text": text,
+                "parse_mode": "Markdown",
+                "disable_web_page_preview": True,
+            }
+        ).encode("utf-8")
 
         req = Request(url, data=payload, headers={"Content-Type": "application/json"})
 

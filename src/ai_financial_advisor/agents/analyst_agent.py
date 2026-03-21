@@ -67,7 +67,18 @@ class AnalystAgent:
             AnalystReport with the investment outlook.
         """
         if symbols is None:
-            symbols = ["AAPL", "MSFT", "AMZN", "GOOG", "NVDA", "META", "TSLA", "JPM", "NFLX", "DIS"]
+            symbols = [
+                "AAPL",
+                "MSFT",
+                "AMZN",
+                "GOOG",
+                "NVDA",
+                "META",
+                "TSLA",
+                "JPM",
+                "NFLX",
+                "DIS",
+            ]
 
         # Step 1: Extract sentiment from news
         logger.info("Step 1: Analyzing news sentiment...")
@@ -84,7 +95,10 @@ class AnalystAgent:
 
         response = self._llm.complete(
             messages=[
-                {"role": "system", "content": "You are a senior investment analyst providing data-driven portfolio recommendations."},
+                {
+                    "role": "system",
+                    "content": "You are a senior investment analyst providing data-driven portfolio recommendations.",
+                },
                 {"role": "user", "content": prompt},
             ],
             temperature=self._settings.llm.temperature,

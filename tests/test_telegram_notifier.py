@@ -2,7 +2,10 @@
 
 import pytest
 
-from ai_financial_advisor.notifications.telegram import TelegramNotifier, MAX_MESSAGE_LENGTH
+from ai_financial_advisor.notifications.telegram import (
+    MAX_MESSAGE_LENGTH,
+    TelegramNotifier,
+)
 
 
 class TestTelegramSplitMessage:
@@ -62,15 +65,18 @@ class TestTelegramNotifier:
 class TestFactory:
     def test_create_telegram(self):
         from ai_financial_advisor.notifications.factory import create_notifier
+
         notifier = create_notifier("telegram", bot_token="tok", chat_id="123")
         assert isinstance(notifier, TelegramNotifier)
 
     def test_unknown_provider_raises(self):
         from ai_financial_advisor.notifications.factory import create_notifier
+
         with pytest.raises(ValueError, match="Unknown"):
             create_notifier("slack")
 
     def test_missing_token_raises(self):
         from ai_financial_advisor.notifications.factory import create_notifier
+
         with pytest.raises(ValueError, match="bot_token"):
             create_notifier("telegram", bot_token="", chat_id="123")

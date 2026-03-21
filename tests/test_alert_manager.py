@@ -1,7 +1,5 @@
 """Tests for the alert manager."""
 
-from unittest.mock import MagicMock
-
 import pytest
 
 from ai_financial_advisor.notifications.alert_manager import AlertManager

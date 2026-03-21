@@ -3,7 +3,10 @@
 import pandas as pd
 
 from ai_financial_advisor.analysis.indicators import compute_all_indicators
-from ai_financial_advisor.analysis.trend_score import TrendScoreResult, calculate_trend_score
+from ai_financial_advisor.analysis.trend_score import (
+    TrendScoreResult,
+    calculate_trend_score,
+)
 
 
 class TestTrendScore:

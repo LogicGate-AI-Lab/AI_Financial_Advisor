@@ -44,9 +44,15 @@ class TestInterpretMacro:
         assert ctx.regime == "contraction"
 
     def test_transition_regime(self) -> None:
-        snap = MacroSnapshot(gdp_growth=1.0, cpi_yoy=2.0, unemployment=4.0,
-                             fed_funds=3.0, treasury_10y=3.5, treasury_2y=3.0,
-                             yield_curve_spread=0.5)
+        snap = MacroSnapshot(
+            gdp_growth=1.0,
+            cpi_yoy=2.0,
+            unemployment=4.0,
+            fed_funds=3.0,
+            treasury_10y=3.5,
+            treasury_2y=3.0,
+            yield_curve_spread=0.5,
+        )
         ctx = interpret_macro(snap)
         assert ctx.regime == "transition"
 
@@ -55,9 +61,15 @@ class TestInterpretMacro:
         assert ctx.yield_curve_signal == "inverted"
 
     def test_normal_yield_curve(self) -> None:
-        snap = MacroSnapshot(gdp_growth=2.5, cpi_yoy=2.5, unemployment=4.0,
-                             fed_funds=3.0, treasury_10y=4.5, treasury_2y=3.5,
-                             yield_curve_spread=1.0)
+        snap = MacroSnapshot(
+            gdp_growth=2.5,
+            cpi_yoy=2.5,
+            unemployment=4.0,
+            fed_funds=3.0,
+            treasury_10y=4.5,
+            treasury_2y=3.5,
+            yield_curve_spread=1.0,
+        )
         ctx = interpret_macro(snap)
         assert ctx.yield_curve_signal == "normal"
 
@@ -78,9 +90,15 @@ class TestInterpretMacro:
         assert len(ctx.summary) > 20
 
     def test_handles_none_values(self) -> None:
-        snap = MacroSnapshot(gdp_growth=None, cpi_yoy=None, unemployment=None,
-                             fed_funds=None, treasury_10y=None, treasury_2y=None,
-                             yield_curve_spread=None)
+        snap = MacroSnapshot(
+            gdp_growth=None,
+            cpi_yoy=None,
+            unemployment=None,
+            fed_funds=None,
+            treasury_10y=None,
+            treasury_2y=None,
+            yield_curve_spread=None,
+        )
         ctx = interpret_macro(snap)
         assert ctx.regime == "unknown"
         assert ctx.summary == "Insufficient macro data available."

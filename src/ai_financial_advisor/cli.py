@@ -13,7 +13,6 @@ Usage:
 
 import logging
 from datetime import date, timedelta
-from typing import Optional
 
 import typer
 
@@ -52,7 +51,7 @@ def _setup_logging(level: str = "INFO") -> None:
 @news_app.command("run")
 def news_run(
     lang: str = typer.Option("en", "--lang", "-l", help="Report language: 'en' or 'cn'."),
-    target_date: Optional[str] = typer.Option(None, "--date", "-d", help="Report date (YYYY-MM-DD). Default: yesterday."),
+    target_date: str | None = typer.Option(None, "--date", "-d", help="Report date (YYYY-MM-DD). Default: yesterday."),
 ) -> None:
     """Run the full news pipeline: fetch, scrape, analyze, and save report."""
     from .agents.news_agent import NewsAgent
@@ -86,16 +85,16 @@ def stock_score(
     agent = StockAgent()
     result = agent.analyze(symbol, period=period)
 
-    typer.echo(f"\n{'='*40}")
+    typer.echo(f"\n{'=' * 40}")
     typer.echo(f"  {result.symbol} Trend Analysis")
-    typer.echo(f"{'='*40}")
+    typer.echo(f"{'=' * 40}")
     typer.echo(f"  Latest Close:  ${result.latest_close:.2f}")
     typer.echo(f"  Trend Score:   {result.trend.score:+.4f}")
     typer.echo(f"  Interpretation: {result.trend.interpretation}")
     typer.echo(f"  MACD Signal:   {result.trend.macd_signal:+.4f}")
     typer.echo(f"  MFI Signal:    {result.trend.mfi_signal:+.4f}")
     typer.echo(f"  OBV Signal:    {result.trend.obv_signal:+.4f}")
-    typer.echo(f"{'='*40}\n")
+    typer.echo(f"{'=' * 40}\n")
 
 
 @stock_app.command("scan")
@@ -105,14 +104,16 @@ def stock_scan(
         help="Comma-separated list of ticker symbols. Ignored if --market is set.",
     ),
     period: str = typer.Option("1y", "--period", "-p", help="Data period."),
-    market: Optional[str] = typer.Option(
-        None, "--market", "-m",
+    market: str | None = typer.Option(
+        None,
+        "--market",
+        "-m",
         help="Use preset watchlist: us, cn, hk, eu, jp, crypto, forex, commodity.",
     ),
 ) -> None:
     """Scan multiple stocks and rank by trend score."""
     from .agents.stock_agent import StockAgent
-    from .data.market_types import MarketType, get_currency, get_watchlist
+    from .data.market_types import MarketType, get_watchlist
 
     _setup_logging("WARNING")
 
@@ -120,7 +121,11 @@ def stock_scan(
         try:
             market_type = MarketType(market.lower())
         except ValueError:
-            typer.echo(f"Unknown market: {market}. Options: {', '.join(m.value for m in MarketType if m != MarketType.UNKNOWN)}", err=True)
+            typer.echo(
+                f"Unknown market: {market}. "
+                f"Options: {', '.join(m.value for m in MarketType if m != MarketType.UNKNOWN)}",
+                err=True,
+            )
             raise typer.Exit(code=1)
         symbol_list = get_watchlist(market_type)
         if not symbol_list:
@@ -130,7 +135,18 @@ def stock_scan(
     elif symbols:
         symbol_list = [s.strip() for s in symbols.split(",")]
     else:
-        symbol_list = ["AAPL", "MSFT", "AMZN", "GOOG", "TSLA", "NVDA", "META", "JPM", "NFLX", "DIS"]
+        symbol_list = [
+            "AAPL",
+            "MSFT",
+            "AMZN",
+            "GOOG",
+            "TSLA",
+            "NVDA",
+            "META",
+            "JPM",
+            "NFLX",
+            "DIS",
+        ]
 
     agent = StockAgent()
     results = agent.analyze_multiple(symbol_list, period=period)
@@ -142,7 +158,8 @@ def stock_scan(
     typer.echo("-" * 54)
     for r in results:
         typer.echo(
-            f"{r.symbol:<12} {r.currency:>8} {r.latest_close:>12.2f} {r.trend.score:>+7.4f} {r.trend.interpretation:<10}"
+            f"{r.symbol:<12} {r.currency:>8} {r.latest_close:>12.2f} "
+            f"{r.trend.score:>+7.4f} {r.trend.interpretation:<10}"
         )
     typer.echo()
 
@@ -196,30 +213,61 @@ def macro_show() -> None:
     _setup_logging(settings.log_level)
 
     if not settings.fred.enabled or not settings.fred.api_key:
-        typer.echo("FRED is not configured. Set FRED_API_KEY and FRED_ENABLED=true in .env", err=True)
+        typer.echo(
+            "FRED is not configured. Set FRED_API_KEY and FRED_ENABLED=true in .env",
+            err=True,
+        )
         raise typer.Exit(code=1)
 
     fetcher = MacroDataFetcher(api_key=settings.fred.api_key)
     snapshot = fetcher.fetch_snapshot()
     context = interpret_macro(snapshot)
 
-    typer.echo(f"\n{'='*50}")
+    typer.echo(f"\n{'=' * 50}")
     typer.echo("  Macroeconomic Dashboard")
-    typer.echo(f"{'='*50}")
+    typer.echo(f"{'=' * 50}")
     typer.echo(f"  As of:              {snapshot.as_of}")
     typer.echo(f"  Economic Regime:    {context.regime.upper()}")
-    typer.echo(f"  GDP Growth:         {snapshot.gdp_growth:+.2f}%" if snapshot.gdp_growth is not None else "  GDP Growth:         N/A")
-    typer.echo(f"  CPI (YoY):          {snapshot.cpi_yoy:.2f}%" if snapshot.cpi_yoy is not None else "  CPI (YoY):          N/A")
-    typer.echo(f"  Unemployment:       {snapshot.unemployment:.1f}%" if snapshot.unemployment is not None else "  Unemployment:       N/A")
-    typer.echo(f"  Fed Funds Rate:     {snapshot.fed_funds:.2f}%" if snapshot.fed_funds is not None else "  Fed Funds Rate:     N/A")
-    typer.echo(f"  10Y Treasury:       {snapshot.treasury_10y:.2f}%" if snapshot.treasury_10y is not None else "  10Y Treasury:       N/A")
-    typer.echo(f"  2Y Treasury:        {snapshot.treasury_2y:.2f}%" if snapshot.treasury_2y is not None else "  2Y Treasury:        N/A")
-    typer.echo(f"  Yield Curve (10-2): {snapshot.yield_curve_spread:+.2f}%" if snapshot.yield_curve_spread is not None else "  Yield Curve:        N/A")
-    typer.echo(f"{'='*50}")
+    typer.echo(
+        f"  GDP Growth:         {snapshot.gdp_growth:+.2f}%"
+        if snapshot.gdp_growth is not None
+        else "  GDP Growth:         N/A"
+    )
+    typer.echo(
+        f"  CPI (YoY):          {snapshot.cpi_yoy:.2f}%"
+        if snapshot.cpi_yoy is not None
+        else "  CPI (YoY):          N/A"
+    )
+    typer.echo(
+        f"  Unemployment:       {snapshot.unemployment:.1f}%"
+        if snapshot.unemployment is not None
+        else "  Unemployment:       N/A"
+    )
+    typer.echo(
+        f"  Fed Funds Rate:     {snapshot.fed_funds:.2f}%"
+        if snapshot.fed_funds is not None
+        else "  Fed Funds Rate:     N/A"
+    )
+    typer.echo(
+        f"  10Y Treasury:       {snapshot.treasury_10y:.2f}%"
+        if snapshot.treasury_10y is not None
+        else "  10Y Treasury:       N/A"
+    )
+    typer.echo(
+        f"  2Y Treasury:        {snapshot.treasury_2y:.2f}%"
+        if snapshot.treasury_2y is not None
+        else "  2Y Treasury:        N/A"
+    )
+    typer.echo(
+        f"  Yield Curve (10-2): {snapshot.yield_curve_spread:+.2f}%"
+        if snapshot.yield_curve_spread is not None
+        else "  Yield Curve:        N/A"
+    )
+    typer.echo(f"{'=' * 50}")
     typer.echo(f"  Inflation:          {context.inflation_trend}")
     typer.echo(f"  Rate Environment:   {context.rate_environment}")
     typer.echo(f"  Yield Curve Signal: {context.yield_curve_signal}")
-    typer.echo(f"{'='*50}\n")
+    typer.echo(f"{'=' * 50}\n")
     typer.echo(f"  {context.summary}\n")
 
 
@@ -235,9 +283,9 @@ def config_show() -> None:
             return "***" if key else "(not set)"
         return key[:4] + "..." + key[-4:]
 
-    typer.echo(f"\n{'='*40}")
+    typer.echo(f"\n{'=' * 40}")
     typer.echo("  AI Financial Advisor Configuration")
-    typer.echo(f"{'='*40}")
+    typer.echo(f"{'=' * 40}")
     typer.echo(f"  LLM Provider:  {settings.llm.provider.value}")
     typer.echo(f"  LLM Model:     {settings.llm.model}")
     typer.echo(f"  LLM Base URL:  {settings.llm.base_url or '(default)'}")
@@ -246,7 +294,7 @@ def config_show() -> None:
     typer.echo(f"  Storage:       {settings.storage.backend.value}")
     typer.echo(f"  Reports Dir:   {settings.storage.reports_dir}")
     typer.echo(f"  Log Level:     {settings.log_level}")
-    typer.echo(f"{'='*40}\n")
+    typer.echo(f"{'=' * 40}\n")
 
 
 @app.command("analyze")
@@ -254,7 +302,9 @@ def analyze(
     report: str = typer.Option(..., "--report", "-r", help="Path to a news report markdown file."),
     symbols: str = typer.Option(
         "AAPL,MSFT,AMZN,GOOG,NVDA,META,TSLA,JPM",
-        "--symbols", "-s", help="Comma-separated stock symbols.",
+        "--symbols",
+        "-s",
+        help="Comma-separated stock symbols.",
     ),
     period: str = typer.Option("6mo", "--period", "-p", help="Stock data period."),
 ) -> None:
@@ -278,9 +328,9 @@ def analyze(
     agent = AnalystAgent(settings)
     result = agent.run(news_report=report_text, symbols=symbol_list, period=period)
 
-    typer.echo(f"\n{'='*50}")
+    typer.echo(f"\n{'=' * 50}")
     typer.echo("  Investment Outlook Report")
-    typer.echo(f"{'='*50}\n")
+    typer.echo(f"{'=' * 50}\n")
     typer.echo(result.report)
 
 
@@ -312,9 +362,9 @@ def backtest_run(
     bt = Backtester(initial_capital=capital)
     result = bt.run(signals, symbol=symbol, period=period)
 
-    typer.echo(f"\n{'='*45}")
+    typer.echo(f"\n{'=' * 45}")
     typer.echo(f"  {result.symbol} Backtest Results ({result.period})")
-    typer.echo(f"{'='*45}")
+    typer.echo(f"{'=' * 45}")
     typer.echo(f"  Initial Capital:    ${result.initial_capital:,.2f}")
     typer.echo(f"  Final Value:        ${result.final_value:,.2f}")
     typer.echo(f"  Total Return:       {result.total_return:+.2f}%")
@@ -323,11 +373,11 @@ def backtest_run(
     typer.echo(f"  Max Drawdown:       {result.max_drawdown:.2f}%")
     typer.echo(f"  Win Rate:           {result.win_rate:.1f}%")
     typer.echo(f"  Total Trades:       {result.total_trades}")
-    typer.echo(f"{'='*45}")
+    typer.echo(f"{'=' * 45}")
 
     if result.trades:
         typer.echo(f"\n  {'Buy Date':<12} {'Buy $':>10} {'Sell Date':<12} {'Sell $':>10} {'Return':>8} {'Days':>5}")
-        typer.echo(f"  {'-'*60}")
+        typer.echo(f"  {'-' * 60}")
         for t in result.trades:
             typer.echo(
                 f"  {str(t.buy_date)[:10]:<12} {t.buy_price:>10.2f} "
@@ -373,7 +423,9 @@ def backtest_scan(
 
     results.sort(key=lambda r: r.total_return, reverse=True)
 
-    typer.echo(f"\n{'Symbol':<10} {'Return':>10} {'Annual':>10} {'Sharpe':>8} {'MaxDD':>8} {'WinRate':>8} {'Trades':>7}")
+    typer.echo(
+        f"\n{'Symbol':<10} {'Return':>10} {'Annual':>10} {'Sharpe':>8} {'MaxDD':>8} {'WinRate':>8} {'Trades':>7}"
+    )
     typer.echo("-" * 65)
     for r in results:
         typer.echo(
@@ -393,7 +445,10 @@ def _get_notifier():
         typer.echo("Notifications are not enabled. Set NOTIFY_ENABLED=true in .env", err=True)
         raise typer.Exit(code=1)
     if not settings.notify.telegram_bot_token or not settings.notify.telegram_chat_id:
-        typer.echo("Telegram not configured. Set NOTIFY_TELEGRAM_BOT_TOKEN and NOTIFY_TELEGRAM_CHAT_ID in .env", err=True)
+        typer.echo(
+            "Telegram not configured. Set NOTIFY_TELEGRAM_BOT_TOKEN and NOTIFY_TELEGRAM_CHAT_ID in .env",
+            err=True,
+        )
         raise typer.Exit(code=1)
     return create_notifier(
         "telegram",
@@ -419,7 +474,9 @@ def notify_test() -> None:
 def notify_digest(
     symbols: str = typer.Option(
         "AAPL,MSFT,AMZN,GOOG,NVDA,META,TSLA,JPM",
-        "--symbols", "-s", help="Comma-separated stock symbols.",
+        "--symbols",
+        "-s",
+        help="Comma-separated stock symbols.",
     ),
     period: str = typer.Option("6mo", "--period", "-p", help="Data period."),
 ) -> None:

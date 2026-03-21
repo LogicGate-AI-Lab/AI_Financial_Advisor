@@ -64,7 +64,11 @@ class SQLiteStore(DataStore):
                 pass  # Duplicate URL, skip
 
         self._conn.commit()
-        logger.info("Saved %d new articles (%d duplicates skipped).", inserted, len(articles) - inserted)
+        logger.info(
+            "Saved %d new articles (%d duplicates skipped).",
+            inserted,
+            len(articles) - inserted,
+        )
         return inserted
 
     def get_articles_without_content(self) -> list[Article]:

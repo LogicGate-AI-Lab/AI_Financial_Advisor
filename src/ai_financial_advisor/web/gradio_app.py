@@ -13,7 +13,6 @@ Deploy to Hugging Face Spaces:
 
 import logging
 from datetime import date, timedelta
-from pathlib import Path
 
 import gradio as gr
 import plotly.graph_objects as go
@@ -65,36 +64,61 @@ def _format_summary(r: StockAnalysis) -> str:
 def _build_chart(r: StockAnalysis) -> go.Figure:
     df = r.data.tail(90)  # last 90 trading days
     fig = make_subplots(
-        rows=4, cols=1, shared_xaxes=True,
+        rows=4,
+        cols=1,
+        shared_xaxes=True,
         vertical_spacing=0.03,
         row_heights=[0.4, 0.2, 0.2, 0.2],
-        subplot_titles=(
-            f"{r.symbol} Price", "MACD", "MFI", "OBV"
-        ),
+        subplot_titles=(f"{r.symbol} Price", "MACD", "MFI", "OBV"),
     )
 
     # Price candlestick
     fig.add_trace(
         go.Candlestick(
-            x=df.index, open=df["Open"], high=df["High"],
-            low=df["Low"], close=df["Close"], name="Price",
+            x=df.index,
+            open=df["Open"],
+            high=df["High"],
+            low=df["Low"],
+            close=df["Close"],
+            name="Price",
         ),
-        row=1, col=1,
+        row=1,
+        col=1,
     )
 
     # MACD
-    fig.add_trace(go.Scatter(x=df.index, y=df["MACD"], name="MACD", line=dict(color="blue")), row=2, col=1)
-    fig.add_trace(go.Scatter(x=df.index, y=df["Signal"], name="Signal", line=dict(color="orange")), row=2, col=1)
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df["MACD"], name="MACD", line=dict(color="blue")),
+        row=2,
+        col=1,
+    )
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df["Signal"], name="Signal", line=dict(color="orange")),
+        row=2,
+        col=1,
+    )
     colors = ["green" if v >= 0 else "red" for v in df["Histogram"]]
-    fig.add_trace(go.Bar(x=df.index, y=df["Histogram"], name="Histogram", marker_color=colors), row=2, col=1)
+    fig.add_trace(
+        go.Bar(x=df.index, y=df["Histogram"], name="Histogram", marker_color=colors),
+        row=2,
+        col=1,
+    )
 
     # MFI
-    fig.add_trace(go.Scatter(x=df.index, y=df["MFI"], name="MFI", line=dict(color="purple")), row=3, col=1)
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df["MFI"], name="MFI", line=dict(color="purple")),
+        row=3,
+        col=1,
+    )
     fig.add_hline(y=80, line_dash="dash", line_color="red", row=3, col=1)
     fig.add_hline(y=20, line_dash="dash", line_color="green", row=3, col=1)
 
     # OBV
-    fig.add_trace(go.Scatter(x=df.index, y=df["OBV"], name="OBV", line=dict(color="teal")), row=4, col=1)
+    fig.add_trace(
+        go.Scatter(x=df.index, y=df["OBV"], name="OBV", line=dict(color="teal")),
+        row=4,
+        col=1,
+    )
 
     fig.update_layout(
         height=900,
@@ -109,6 +133,7 @@ def _build_chart(r: StockAnalysis) -> go.Figure:
 # ---------------------------------------------------------------------------
 # News report browser tab
 # ---------------------------------------------------------------------------
+
 
 def browse_report(date_str: str, language: str) -> str:
     """Load a saved report from the reports directory."""
@@ -137,16 +162,14 @@ def browse_report(date_str: str, language: str) -> str:
 # App assembly
 # ---------------------------------------------------------------------------
 
+
 def create_app() -> gr.Blocks:
     """Build and return the Gradio app."""
     with gr.Blocks(
         title="AI Financial Advisor",
         theme=gr.themes.Soft(),
     ) as app:
-        gr.Markdown(
-            "# AI Financial Advisor\n"
-            "Data-driven investment insights powered by technical analysis and AI."
-        )
+        gr.Markdown("# AI Financial Advisor\nData-driven investment insights powered by technical analysis and AI.")
 
         with gr.Tab("Stock Trend Analyzer"):
             with gr.Row():

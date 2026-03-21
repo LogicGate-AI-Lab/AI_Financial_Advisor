@@ -75,10 +75,7 @@ class NewsAgent:
             The generated report as a markdown string.
         """
         # Filter out failed scrapes
-        valid_articles = [
-            a for a in articles
-            if a.content and a.content != "SCRAPING_FAILED"
-        ]
+        valid_articles = [a for a in articles if a.content and a.content != "SCRAPING_FAILED"]
 
         if not valid_articles:
             logger.warning("No valid articles to generate report from.")
@@ -101,7 +98,11 @@ class NewsAgent:
             max_tokens=self._settings.llm.max_tokens,
         )
 
-        logger.info("Report generated (%d chars). Provider: %s", len(response.content), self._llm.name)
+        logger.info(
+            "Report generated (%d chars). Provider: %s",
+            len(response.content),
+            self._llm.name,
+        )
         return response.content
 
     def save_report(self, report: str, target_date: date, language: str = "en") -> Path:

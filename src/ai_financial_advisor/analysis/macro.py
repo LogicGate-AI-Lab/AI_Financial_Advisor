@@ -13,11 +13,11 @@ from ..data.macro_data import MacroSnapshot
 class MacroContext:
     """Interpreted macroeconomic environment."""
 
-    regime: str                  # "expansion", "contraction", "transition"
-    yield_curve_signal: str      # "normal", "flat", "inverted"
-    inflation_trend: str         # "rising", "stable", "falling"
-    rate_environment: str        # "tightening", "neutral", "easing"
-    summary: str                 # Human-readable summary
+    regime: str  # "expansion", "contraction", "transition"
+    yield_curve_signal: str  # "normal", "flat", "inverted"
+    inflation_trend: str  # "rising", "stable", "falling"
+    rate_environment: str  # "tightening", "neutral", "easing"
+    summary: str  # Human-readable summary
 
 
 def interpret_macro(snapshot: MacroSnapshot) -> MacroContext:

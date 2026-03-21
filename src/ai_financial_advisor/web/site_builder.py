@@ -13,7 +13,6 @@ from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
 
-import plotly.graph_objects as go
 from jinja2 import Environment, FileSystemLoader
 
 logger = logging.getLogger(__name__)
@@ -85,9 +84,12 @@ class SiteBuilder:
         self._build_reports(reports)
         self._build_market(market_data)
 
-        logger.info("Site built at %s (%d reports, %d market sections).",
-                     self._output_dir, len(reports),
-                     len(market_data) if market_data else 0)
+        logger.info(
+            "Site built at %s (%d reports, %d market sections).",
+            self._output_dir,
+            len(reports),
+            len(market_data) if market_data else 0,
+        )
         return self._output_dir
 
     def _copy_assets(self) -> None:
@@ -114,12 +116,14 @@ class SiteBuilder:
             title = first_line.lstrip("# ").strip() or f"Report {date_str}"
 
             html_name = md_file.stem + ".html"
-            reports.append(ReportInfo(
-                title=title,
-                date=date_str,
-                filename=html_name,
-                source_path=md_file,
-            ))
+            reports.append(
+                ReportInfo(
+                    title=title,
+                    date=date_str,
+                    filename=html_name,
+                    source_path=md_file,
+                )
+            )
 
         return reports
 
@@ -140,11 +144,13 @@ class SiteBuilder:
                 if stocks:
                     avg_score = sum(s.score for s in stocks) / len(stocks)
                     interp = "Bullish" if avg_score > 0.3 else "Bearish" if avg_score < -0.3 else "Neutral"
-                    market_summary.append({
-                        "label": name,
-                        "score": avg_score,
-                        "interpretation": interp,
-                    })
+                    market_summary.append(
+                        {
+                            "label": name,
+                            "score": avg_score,
+                            "interpretation": interp,
+                        }
+                    )
 
         template = self._env.get_template("dashboard.html")
         html = template.render(

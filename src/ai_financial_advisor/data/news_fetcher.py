@@ -1,7 +1,7 @@
 """NewsAPI client — fetches top headlines from major financial media."""
 
 import logging
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 
 from newsapi import NewsApiClient
@@ -62,9 +62,7 @@ class NewsFetcher:
             try:
                 published_str = item.get("publishedAt", "")
                 published_at = (
-                    datetime.fromisoformat(published_str.replace("Z", "+00:00"))
-                    if published_str
-                    else datetime.now()
+                    datetime.fromisoformat(published_str.replace("Z", "+00:00")) if published_str else datetime.now()
                 )
                 articles.append(
                     Article(

@@ -1,10 +1,8 @@
 """Tests for the backtesting engine."""
 
 import pandas as pd
-import pytest
 
 from ai_financial_advisor.strategies.backtester import (
-    BacktestResult,
     Backtester,
     Trade,
 )
@@ -14,10 +12,7 @@ from ai_financial_advisor.strategies.trend_strategy import Signal
 def _make_signals(prices: list[float], actions: list[str]) -> list[Signal]:
     """Create a list of signals from prices and actions."""
     dates = pd.bdate_range("2024-01-01", periods=len(prices))
-    return [
-        Signal(date=d, action=a, score=0.0, price=p)
-        for d, a, p in zip(dates, actions, prices)
-    ]
+    return [Signal(date=d, action=a, score=0.0, price=p) for d, a, p in zip(dates, actions, prices)]
 
 
 class TestTradeDataclass:
