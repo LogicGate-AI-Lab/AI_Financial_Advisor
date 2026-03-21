@@ -67,6 +67,25 @@ class StorageSettings(BaseSettings):
     reports_dir: Path = Path("data/reports")
 
 
+class FREDSettings(BaseSettings):
+    """FRED API configuration for macroeconomic data."""
+
+    model_config = SettingsConfigDict(env_prefix="FRED_", env_file=".env", extra="ignore")
+
+    api_key: str = ""
+    enabled: bool = False
+
+
+class NotificationSettings(BaseSettings):
+    """Notification system configuration."""
+
+    model_config = SettingsConfigDict(env_prefix="NOTIFY_", env_file=".env", extra="ignore")
+
+    enabled: bool = False
+    telegram_bot_token: str = ""
+    telegram_chat_id: str = ""
+
+
 class Settings(BaseSettings):
     """Root application settings."""
 
@@ -80,6 +99,8 @@ class Settings(BaseSettings):
     llm: LLMSettings = Field(default_factory=LLMSettings)
     news_api: NewsAPISettings = Field(default_factory=NewsAPISettings)
     storage: StorageSettings = Field(default_factory=StorageSettings)
+    fred: FREDSettings = Field(default_factory=FREDSettings)
+    notify: NotificationSettings = Field(default_factory=NotificationSettings)
 
     log_level: str = "INFO"
 

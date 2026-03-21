@@ -5,8 +5,10 @@ from dataclasses import dataclass
 
 import pandas as pd
 
+from ..analysis.anomaly import Anomaly, AnomalyDetector
 from ..analysis.indicators import compute_all_indicators
 from ..analysis.trend_score import TrendScoreResult, calculate_trend_score
+from ..data.market_types import get_currency, has_volume
 from ..data.stock_data import download_stock_data
 
 logger = logging.getLogger(__name__)
@@ -21,6 +23,8 @@ class StockAnalysis:
     latest_close: float
     trend: TrendScoreResult
     data: pd.DataFrame
+    currency: str = "USD"
+    anomalies: list[Anomaly] | None = None
 
 
 class StockAgent:
@@ -63,6 +67,7 @@ class StockAgent:
             latest_close=latest_close,
             trend=trend,
             data=df,
+            currency=get_currency(symbol),
         )
 
     def analyze_multiple(

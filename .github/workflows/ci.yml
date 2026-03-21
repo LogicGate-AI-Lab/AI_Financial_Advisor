@@ -32,7 +32,7 @@ jobs:
       - name: Run tests
         run: pytest --cov=ai_financial_advisor --cov-report=term-missing
 
-  lint:
+  format:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

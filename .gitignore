@@ -1,5 +1,7 @@
 # API keys and secrets
 .env
+.env.*
+!.env.example
 
 # Python
 __pycache__/
@@ -10,18 +12,23 @@ __pycache__/
 dist/
 build/
 .eggs/
+.venv/
+venv/
+*.egg
 
-# Data files
+# Data files (reports are committed, DB and logs are not)
 *.db
-*.csv
-data/
+data/logs/
+data/news.db
 
 # IDE
 .vscode/
 .idea/
 *.swp
+*.swo
+*~
 
-# Testing and tools
+# Testing tools
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -29,6 +36,15 @@ data/
 htmlcov/
 test_cache/
 
+# Generated site output
+docs/site/
+
+# Server deployment (cron, scripts, local configs — never push)
+server/
+
 # OS
 .DS_Store
 Thumbs.db
+
+# Claude Code
+.claude/

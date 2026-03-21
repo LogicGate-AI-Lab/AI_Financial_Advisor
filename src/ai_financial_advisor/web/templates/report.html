@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} — AI Financial Advisor{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>{{ title }}</h1>
+    <p class="subtitle">{{ date }} &middot; <a href="index.html">&larr; All Reports</a></p>
+</div>
+
+<div class="card report-content">
+    {{ content }}
+</div>
+{% endblock %}

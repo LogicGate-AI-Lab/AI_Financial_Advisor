@@ -76,6 +76,8 @@ def calculate_mfi(df: pd.DataFrame, period: int = 14) -> pd.DataFrame:
 def compute_all_indicators(df: pd.DataFrame) -> pd.DataFrame:
     """Compute MACD, OBV, and MFI indicators in a single pass.
 
+    For assets without volume data (e.g., forex), OBV and MFI are skipped.
+
     Args:
         df: DataFrame with OHLCV columns (Open, High, Low, Close, Volume).
 
@@ -83,6 +85,11 @@ def compute_all_indicators(df: pd.DataFrame) -> pd.DataFrame:
         DataFrame with all indicator columns added.
     """
     df = calculate_macd(df)
-    df = calculate_obv(df)
-    df = calculate_mfi(df)
+
+    # Skip volume-dependent indicators if volume is all zeros or missing
+    has_volume = "Volume" in df.columns and (df["Volume"] > 0).any()
+    if has_volume:
+        df = calculate_obv(df)
+        df = calculate_mfi(df)
+
     return df

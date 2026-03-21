@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}AI Financial Advisor{% endblock %}</title>
+    <link rel="stylesheet" href="{{ root }}assets/style.css">
+    {% block head %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <a href="{{ root }}index.html" class="navbar-brand">AI Financial Advisor</a>
+            <ul class="navbar-nav">
+                <li><a href="{{ root }}index.html" {% if active == 'dashboard' %}class="active"{% endif %}>Dashboard</a></li>
+                <li><a href="{{ root }}market/index.html" {% if active == 'market' %}class="active"{% endif %}>Market</a></li>
+                <li><a href="{{ root }}reports/index.html" {% if active == 'reports' %}class="active"{% endif %}>Reports</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            AI Financial Advisor &mdash; Updated daily via automated pipeline.
+            <br>Data sources: Yahoo Finance, NewsAPI. Analysis powered by LLM.
+        </div>
+    </footer>
+</body>
+</html>

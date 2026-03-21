@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Reports — AI Financial Advisor{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>News Reports</h1>
+    <p class="subtitle">{{ reports|length }} reports available</p>
+</div>
+
+{% if reports %}
+<div class="card">
+    <ul class="report-list">
+        {% for report in reports %}
+        <li class="report-item">
+            <span class="report-date">{{ report.date }}</span>
+            <a href="{{ report.filename }}" class="report-title">{{ report.title }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+</div>
+{% else %}
+<div class="card empty-state">
+    <h3>No reports yet</h3>
+    <p>Reports will appear here after running the news pipeline.</p>
+</div>
+{% endif %}
+{% endblock %}

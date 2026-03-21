@@ -1,0 +1,44 @@
+name: Deploy Site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/reports/**"
+      - "src/ai_financial_advisor/web/**"
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .
+
+      - name: Build site
+        run: |
+          python -c "
+          from ai_financial_advisor.web.site_builder import SiteBuilder
+          builder = SiteBuilder(reports_dir='data/reports', output_dir='docs/site')
+          builder.build_all()
+          print('Site built successfully.')
+          "
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/site
+          destination_dir: .

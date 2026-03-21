@@ -48,7 +48,11 @@ def calculate_trend_score(
     Returns:
         TrendScoreResult with the composite score and component signals.
     """
-    w = weights or _DEFAULT_WEIGHTS
+    w = weights or dict(_DEFAULT_WEIGHTS)
+
+    # Check if volume-dependent indicators are available
+    has_mfi = "MFI" in df.columns and not df["MFI"].isna().all()
+    has_obv = "OBV" in df.columns and not df["OBV"].isna().all()
 
     # MACD signal: normalized histogram value
     hist = df["Histogram"]
@@ -56,13 +60,27 @@ def calculate_trend_score(
     macd_signal = float(np.tanh(hist.iloc[-1] / (hist_std + 1e-9)))
 
     # MFI signal: rescaled to [-1, 1]
-    mfi_last = float(df["MFI"].iloc[-1])
-    mfi_signal = float(np.clip((mfi_last - 50) / 50, -1, 1))
+    if has_mfi:
+        mfi_last = float(df["MFI"].iloc[-1])
+        mfi_signal = float(np.clip((mfi_last - 50) / 50, -1, 1))
+    else:
+        mfi_signal = 0.0
 
     # OBV signal: relative change over the lookback window
-    obv = df["OBV"]
-    obv_start = float(obv.iloc[-obv_slope_window])
-    obv_signal = float(np.tanh((obv.iloc[-1] - obv_start) / (abs(obv_start) + 1e-9)))
+    if has_obv:
+        obv = df["OBV"]
+        obv_start = float(obv.iloc[-obv_slope_window])
+        obv_signal = float(np.tanh((obv.iloc[-1] - obv_start) / (abs(obv_start) + 1e-9)))
+    else:
+        obv_signal = 0.0
+
+    # Redistribute weights if volume indicators are missing (e.g., forex)
+    if not has_mfi and not has_obv:
+        w = {"macd": 1.0, "mfi": 0.0, "obv": 0.0}
+    elif not has_mfi:
+        w = {"macd": w["macd"] + w["mfi"] / 2, "mfi": 0.0, "obv": w["obv"] + w["mfi"] / 2}
+    elif not has_obv:
+        w = {"macd": w["macd"] + w["obv"] / 2, "mfi": w["mfi"] + w["obv"] / 2, "obv": 0.0}
 
     score = (
         w["macd"] * macd_signal
