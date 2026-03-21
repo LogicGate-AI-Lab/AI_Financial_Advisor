@@ -36,7 +36,7 @@
 <div class="card">
     <div class="card-header">Price Chart</div>
     <div class="chart-container">
-        {{ chart_html }}
+        {{ chart_html|safe }}
     </div>
 </div>
 {% endif %}
