@@ -30,9 +30,10 @@ jobs:
       - name: Build site
         run: |
           python -c "
+          from pathlib import Path
           from ai_financial_advisor.web.site_builder import SiteBuilder
-          builder = SiteBuilder(reports_dir='data/reports', output_dir='docs/site')
-          builder.build_all()
+          builder = SiteBuilder(reports_dir=Path('data/reports'), output_dir=Path('docs/site'))
+          builder.build()
           print('Site built successfully.')
           "
 
